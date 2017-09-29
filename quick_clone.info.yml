@@ -1,0 +1,5 @@
+name: Quick clone
+type: module
+description: Module wich allow cloning nodes with paragarph fields
+core: 8.x
+package: Custom
