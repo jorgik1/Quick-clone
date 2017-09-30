@@ -11,9 +11,10 @@ use Drupal\paragraphs\Entity\ParagraphsType;
 use Drupal\KernelTests\KernelTestBase;
 
 /**
- * Create a node clone and test edit permissions.
+ * Create a node clone with paragraph fields.
  *
- * @group node
+ * @requires module paragraphs
+ * @group quick_clone
  */
 class QuickCloneTest extends KernelTestBase {
 
