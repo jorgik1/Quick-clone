@@ -14,6 +14,7 @@ use Drupal\KernelTests\KernelTestBase;
  * Create a node clone with paragraph fields.
  *
  * @requires module paragraphs
+ *
  * @group quick_clone
  */
 class QuickCloneTest extends KernelTestBase {
