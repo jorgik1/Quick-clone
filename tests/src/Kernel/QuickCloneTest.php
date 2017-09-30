@@ -51,7 +51,7 @@ class QuickCloneTest extends KernelTestBase {
   }
 
   /**
-   * Tests an anonymous and unpermissioned user attempting to edit the node.
+   * Tests quick cloning of node with paragraph fields.
    */
   public function testQuickClone() {
     // Create the paragraph type.
