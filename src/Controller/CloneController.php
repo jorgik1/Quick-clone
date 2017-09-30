@@ -6,6 +6,7 @@ use DateTime;
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\Entity\EntityTypeManager;
 use Drupal\node\Entity\Node;
+use Drupal\node\NodeInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 
@@ -34,13 +35,13 @@ class CloneController extends ControllerBase {
    */
   public function quickClone($id) {
     $node = $this->entityTypeManager->getStorage('node')->load($id);
-    if (!$node instanceof Node) {
+    if (!$node instanceof NodeInterface) {
       drupal_set_message($this->t('Node with id @id does not exist.', ['@id' => $id]), 'error');
     }
     else {
 
       $nodeDuplicate = $node->createDuplicate();
-      if (!$nodeDuplicate->get('field_paragraphs')->isEmpty()) {
+      if ($nodeDuplicate->hasField('field_paragraphs') && !$nodeDuplicate->get('field_paragraphs')->isEmpty()) {
         foreach ($nodeDuplicate->field_paragraphs as $field) {
           $field->entity = $field->entity->createDuplicate();
         }
