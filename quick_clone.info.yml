@@ -2,4 +2,11 @@ name: Quick clone
 type: module
 description: Module wich allow cloning nodes with paragarph fields
 core: 8.x
-package: Custom
+package: Quick Clone
+
+dependencies:
+  - node
+  - drupal:system (>=8.1.0)
+
+test_dependencies:
+  - paragraps
