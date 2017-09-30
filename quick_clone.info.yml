@@ -10,3 +10,4 @@ dependencies:
 
 test_dependencies:
   - paragraps
+  - entity_reference_revisions:entity_reference_revisions
