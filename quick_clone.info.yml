@@ -10,5 +10,5 @@ dependencies:
   - paragraps
   - entity_reference_revisions
 test_dependencies:
-  - drupal:paragraphs
-  - drupal:entity_reference_revisions
+  - paragraphs:paragraphs
+  - entity_reference_revisions:entity_reference_revisions
