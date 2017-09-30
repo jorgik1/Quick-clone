@@ -31,6 +31,7 @@ class QuickCloneTest extends KernelTestBase {
     'field',
     'entity_reference_revisions',
     'system',
+    'file',
     'user',
     'paragraphs',
   ];
@@ -77,13 +78,11 @@ class QuickCloneTest extends KernelTestBase {
       'cardinality' => '1',
     ]);
     $field_storage->save();
-
     $field = FieldConfig::create([
       'field_storage' => $field_storage,
       'bundle' => 'test_text',
     ]);
     $field->save();
-
     $field = FieldConfig::create([
       'field_storage' => $field_storage,
       'bundle' => 'test_nested',
@@ -101,7 +100,6 @@ class QuickCloneTest extends KernelTestBase {
       ],
     ]);
     $field_storage->save();
-
     $field = FieldConfig::create([
       'field_storage' => $field_storage,
       'bundle' => 'test_nested',
@@ -119,7 +117,6 @@ class QuickCloneTest extends KernelTestBase {
       ],
     ]);
     $field_storage->save();
-
     $field = FieldConfig::create([
       'field_storage' => $field_storage,
       'bundle' => 'article',
@@ -152,7 +149,7 @@ class QuickCloneTest extends KernelTestBase {
     $node = Node::create([
       'title' => $this->randomMachineName(),
       'type' => 'article',
-      'node_paragraph_field' => [$paragraph, $paragraph_nested_parent],
+      'node_paragraph_field' => array($paragraph, $paragraph_nested_parent),
     ]);
     $node->save();
 
