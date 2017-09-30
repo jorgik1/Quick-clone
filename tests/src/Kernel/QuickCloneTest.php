@@ -25,13 +25,13 @@ class QuickCloneTest extends KernelTestBase {
    * @var array
    */
   public static $modules = [
-    'paragraphs',
     'quick_clone',
     'node',
     'field',
     'entity_reference_revisions',
     'system',
     'user',
+    'paragraphs',
   ];
 
   /**
@@ -146,7 +146,6 @@ class QuickCloneTest extends KernelTestBase {
       'nested_paragraph_field' => [$paragraph_nested],
     ]);
     $paragraph_nested_parent->save();
-
 
     // Create a node with two paragraphs.
     $node = Node::create([
