@@ -12,3 +12,6 @@ dependencies:
 test_dependencies:
   - paragraphs:paragraphs
   - entity_reference_revisions:entity_reference_revisions
+  - inline_entity_form:inline_entity_form
+  - field_group:field_group
+  - diff:diff
