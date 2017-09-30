@@ -9,5 +9,5 @@ dependencies:
   - drupal:system (>=8.1.0)
   - paragraps
 test_dependencies:
-  - paragraps:paragraphs
-  - entity_reference_revisions:entity_reference_revisions
+  - paragraps
+  - entity_reference_revisions

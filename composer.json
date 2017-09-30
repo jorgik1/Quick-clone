@@ -1,7 +1,7 @@
 {
   "name": "drupal/quick_clone",
   "type": "drupal-module",
-  "description": "Module wich allow cloning nodes with paragarph fields",
+  "description": "Module which allow cloning nodes with paragraph fields",
   "keywords": ["Drupal"],
   "license": "GPL-2.0+",
   "homepage": "https://www.drupal.org/project/quick_clone",
@@ -9,6 +9,5 @@
   "support": {
     "issues": "https://www.drupal.org/project/issues/quick_clone",
     "source": "http://cgit.drupalcode.org/quick_clone"
-  },
-  "require": { }
+  }
 }
