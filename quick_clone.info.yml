@@ -7,7 +7,7 @@ package: Quick Clone
 dependencies:
   - node
   - drupal:system (>=8.1.0)
-  - drupal:paragraps
+  - drupal:paragraphs
   - drupal:entity_reference_revisions
 test_dependencies:
   - paragraphs:paragraphs
