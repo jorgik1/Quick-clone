@@ -5,7 +5,7 @@ namespace Drupal\quick_clone\Controller;
 use DateTime;
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\Entity\EntityTypeManager;
-use Drupal\node\Entity\Node;
+use Drupal\field\Entity\FieldConfig;
 use Drupal\node\NodeInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -40,10 +40,21 @@ class CloneController extends ControllerBase {
     }
     else {
 
-      $nodeDuplicate = $node->createDuplicate();
-      if ($nodeDuplicate->hasField('field_paragraphs') && !$nodeDuplicate->get('field_paragraphs')->isEmpty()) {
-        foreach ($nodeDuplicate->field_paragraphs as $field) {
-          $field->entity = $field->entity->createDuplicate();
+      $fields = array_filter($node->getFieldDefinitions(), function ($field_definition) {
+        $storage_definitions = $field_definition->getFieldStorageDefinition();
+        $settings = $storage_definitions->getSettings();
+        if ($field_definition instanceof FieldConfig && $settings['target_type'] === 'paragraph') {
+          return $field_definition;
+        }
+      });
+      if (count($fields)) {
+        $nodeDuplicate = $node->createDuplicate();
+        foreach ($fields as $field) {
+          if ($nodeDuplicate->hasField($field) && !$nodeDuplicate->get($field)->isEmpty()) {
+            foreach ($nodeDuplicate->{$field} as $value) {
+              $value->entity = $value->entity->createDuplicate();
+            }
+          }
         }
 
         $date_time = new DateTime();
@@ -56,11 +67,20 @@ class CloneController extends ControllerBase {
             '@id' => $nodeDuplicate->id(),
             '@title' => $nodeDuplicate->getTitle(),
           ]
-          ), 'status');
+        ), 'status');
       }
+      else {
+        $nodeDuplicate = $node->createDuplicate();
+        $nodeDuplicate->set('title', 'Clone of ' . $node->getTitle());
+        $nodeDuplicate->save();
+        drupal_set_message(
+          $this->t('There is no paragraphs in to node, duplicate of the @title was created', [
+            '@title' => $nodeDuplicate->getTitle(),
+          ]
+        ), 'status');
+      }
+      return new RedirectResponse('/admin/content');
     }
-
-    return new RedirectResponse('/admin/content');
   }
 
   /**
