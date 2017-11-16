@@ -34,50 +34,47 @@ class CloneController extends ControllerBase {
    *   Return Hello string.
    */
   public function quickClone($id) {
-    $node = $this->entityTypeManager->getStorage('node')->load($id);
-    if (!$node instanceof NodeInterface) {
+    $original_entity = $this->entityTypeManager->getStorage('node')->load($id);
+    if (!$original_entity instanceof NodeInterface) {
       drupal_set_message($this->t('Node with id @id does not exist.', ['@id' => $id]), 'error');
     }
     else {
 
-      $fields = array_filter($node->getFieldDefinitions(), function ($field_definition) {
-        $storage_definitions = $field_definition->getFieldStorageDefinition();
-        $settings = $storage_definitions->getSettings();
-        if ($field_definition instanceof FieldConfig && $settings['target_type'] === 'paragraph') {
-          return $field_definition;
-        }
-      });
-      if (count($fields)) {
-        $nodeDuplicate = $node->createDuplicate();
-        foreach ($fields as $field) {
-          if ($nodeDuplicate->hasField($field) && !$nodeDuplicate->get($field)->isEmpty()) {
-            foreach ($nodeDuplicate->{$field} as $value) {
-              $value->entity = $value->entity->createDuplicate();
+      $new_node = $original_entity->createDuplicate();
+
+      // Check for paragraph fields which need to be duplicated as well.
+      foreach ($new_node->getTranslationLanguages() as $langcode => $language) {
+        $translated_node = $new_node->getTranslation($langcode);
+
+        foreach ($translated_node->getFieldDefinitions() as $field_definition) {
+          $field_storage_definition = $field_definition->getFieldStorageDefinition();
+          $field_settings = $field_storage_definition->getSettings();
+          if (isset($field_settings['target_type']) && $field_settings['target_type'] === 'paragraph') {
+
+            // Each paragraph entity will be duplicated,
+            // so we won't be editing the same as the parent in every clone.
+            $field_name = $field_storage_definition->getName();
+            if (!$translated_node->get($field_name)->isEmpty()) {
+              foreach ($translated_node->get($field_name) as $value) {
+                if ($value->entity) {
+                  $value->entity = $value->entity->createDuplicate();
+                }
+              }
             }
           }
         }
+        $translated_node->setTitle(t('Clone of @title', ['@title' => $original_entity->getTitle()], ['langcode' => $langcode]));
 
         $date_time = new DateTime();
-        $nodeDuplicate->setCreatedTime($date_time->getTimestamp());
-        $nodeDuplicate->set('title', 'Clone of ' . $node->getTitle());
-        $nodeDuplicate->save();
+        $translated_node->setCreatedTime($date_time->getTimestamp());
+        $translated_node->save();
 
         drupal_set_message(
           $this->t("Node @title has been created. <a href='/node/@id/edit' target='_blank'>Edit now</a>", [
-            '@id' => $nodeDuplicate->id(),
-            '@title' => $nodeDuplicate->getTitle(),
+            '@id' => $translated_node->id(),
+            '@title' => $translated_node->getTitle(),
           ]
-        ), 'status');
-      }
-      else {
-        $nodeDuplicate = $node->createDuplicate();
-        $nodeDuplicate->set('title', 'Clone of ' . $node->getTitle());
-        $nodeDuplicate->save();
-        drupal_set_message(
-          $this->t('There is no paragraphs in to node, duplicate of the @title was created', [
-            '@title' => $nodeDuplicate->getTitle(),
-          ]
-        ), 'status');
+          ), 'status');
       }
       return new RedirectResponse('/admin/content');
     }
